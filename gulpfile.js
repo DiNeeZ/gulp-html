@@ -23,7 +23,7 @@ gulp.task('html', function () {
   return gulp
     .src('./src/*.html')
     .pipe(fileIncludeSettings)
-    .pipe(gulp.dest('./dist/'));
+    .pipe(gulp.dest('./dist'));
 });
 
 // SASS
@@ -47,4 +47,10 @@ const serverOptions = {
 
 gulp.task('server', function () {
   return gulp.src('./dist/').pipe(server(serverOptions));
+});
+
+gulp.task('watch', function () {
+  gulp.watch('./src/scss/**/*.scss', gulp.parallel('sass'));
+  gulp.watch('./src/**/*.html', gulp.series('html'));
+  gulp.watch('./src/img/**/*', gulp.parallel('images'));
 });
