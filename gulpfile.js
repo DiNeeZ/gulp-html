@@ -5,6 +5,8 @@ const server = require('gulp-server-livereload');
 const clean = require('gulp-clean');
 const fs = require('fs');
 const sourcemaps = require('gulp-sourcemaps');
+const plumber = require('gulp-plumber');
+const notify = require('gulp-notify');
 
 // CLEAN
 gulp.task('clean', function (done) {
@@ -14,23 +16,41 @@ gulp.task('clean', function (done) {
   done();
 });
 
-// INCLUDE FILES
+// HTML
 const fileIncludeSettings = fileInclude({
   prefix: '@@',
   basepath: '@file',
 });
 
+const plumberHtmlConfig = {
+  errorHandler: notify.onError({
+    title: 'HTML',
+    message: 'Error <%= error.message %>',
+    sound: false,
+  }),
+};
+
 gulp.task('html', function () {
   return gulp
     .src('./src/*.html')
+    .pipe(plumber(plumberHtmlConfig))
     .pipe(fileIncludeSettings)
     .pipe(gulp.dest('./dist'));
 });
 
 // SASS
+const plumberSassConfig = {
+  errorHandler: notify.onError({
+    title: 'Styles',
+    message: 'Error <%= error.message %>',
+    sound: false,
+  }),
+};
+
 gulp.task('sass', function () {
   return gulp
     .src('./src/scss/*.scss')
+    .pipe(plumber(plumberSassConfig))
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(sourcemaps.write())
