@@ -1,1 +1,5 @@
-console.log("i'm the boss");
+import hello from './modules/hello.js';
+
+import './modules/datePicker.js';
+
+console.log(hello);

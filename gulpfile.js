@@ -9,6 +9,7 @@ const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
 const webpack = require('webpack-stream');
 const babel = require('gulp-babel');
+const imagemin = require('gulp-imagemin');
 
 //Helper functions
 const plumberNotify = (title) => ({
@@ -64,7 +65,10 @@ gulp.task('js', function () {
 
 // IMAGES
 gulp.task('images', function () {
-  return gulp.src('./src/img/**/*').pipe(gulp.dest('./dist/img/'));
+  return gulp
+    .src('./src/img/**/*')
+    .pipe(imagemin({ verbose: true }))
+    .pipe(gulp.dest('./dist/img/'));
 });
 
 // FONTS
