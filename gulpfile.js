@@ -4,6 +4,7 @@ const sass = require('gulp-sass')(require('sass'));
 const server = require('gulp-server-livereload');
 const clean = require('gulp-clean');
 const fs = require('fs');
+const sourcemaps = require('gulp-sourcemaps');
 
 // CLEAN
 gulp.task('clean', function (done) {
@@ -30,7 +31,9 @@ gulp.task('html', function () {
 gulp.task('sass', function () {
   return gulp
     .src('./src/scss/*.scss')
+    .pipe(sourcemaps.init())
     .pipe(sass())
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('./dist/css'));
 });
 
@@ -54,3 +57,12 @@ gulp.task('watch', function () {
   gulp.watch('./src/**/*.html', gulp.series('html'));
   gulp.watch('./src/img/**/*', gulp.parallel('images'));
 });
+
+gulp.task(
+  'default',
+  gulp.series(
+    'clean',
+    gulp.parallel('html', 'sass', 'images'),
+    gulp.parallel('server', 'watch')
+  )
+);
