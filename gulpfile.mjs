@@ -11,10 +11,29 @@ import notify from "gulp-notify";
 import webpack from "webpack-stream";
 import webpackConfig from "./webpack.config.mjs";
 import babel from "gulp-babel";
-import imagemin from "gulp-imagemin";
+import imagemin, { gifsicle, mozjpeg, optipng, svgo } from "gulp-imagemin";
 import changed from "gulp-changed";
 
 const sass = gulpSass(dartSass);
+
+// paths
+const srcFolder = "./src";
+const buildFolder = "./dist";
+const paths = {
+  srcHtmlPages: `${srcFolder}/*.html`,
+  srcHtml: `${srcFolder}/**/*.html`,
+  srcScss: `${srcFolder}/scss/**/*.scss`,
+  buildCssFolder: `${buildFolder}/css`,
+  srcMainJs: `${srcFolder}/js/*.js`,
+  srcJs: `${srcFolder}/js/**/*.js`,
+  buildJsFolder: `${buildFolder}/js`,
+  srcImgFolder: `${srcFolder}/img/**/*`,
+  buildImgFolder: `${buildFolder}/img`,
+  srcFonts: `${srcFolder}/fonts/**/*`,
+  buildFontsFolder: `${buildFolder}/fonts`,
+  srcFiles: `${srcFolder}/files/**/*`,
+  buildFilesFolder: `${buildFolder}/files`,
+};
 
 //Helper functions
 const plumberNotify = (title) => ({
@@ -27,8 +46,8 @@ const plumberNotify = (title) => ({
 
 // CLEAN
 gulp.task("clean", function (done) {
-  if (fs.existsSync("./dist/")) {
-    return gulp.src("./dist/", { read: false }).pipe(clean());
+  if (fs.existsSync(buildFolder)) {
+    return gulp.src(buildFolder, { read: false }).pipe(clean());
   }
   done();
 });
@@ -41,59 +60,77 @@ const fileIncludeSettings = {
 
 gulp.task("html", function () {
   return gulp
-    .src("./src/*.html")
-    .pipe(changed("./dist"))
+    .src(paths.srcHtmlPages)
+    .pipe(changed(buildFolder))
     .pipe(plumber(plumberNotify("HTML")))
     .pipe(fileinclude(fileIncludeSettings))
-    .pipe(gulp.dest("./dist"));
+    .pipe(gulp.dest(buildFolder));
 });
 
 // SASS
 gulp.task("sass", function () {
   return gulp
-    .src("./src/scss/*.scss")
-    .pipe(changed("./dist/css"))
+    .src(paths.srcScss)
+    .pipe(changed(paths.buildCssFolder))
     .pipe(plumber(plumberNotify("SCSS")))
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest("./dist/css"));
+    .pipe(gulp.dest(paths.buildCssFolder));
 });
 
 //JAVASCRIPT
 gulp.task("js", function () {
   return gulp
-    .src("./src/js/*.js")
-    .pipe(changed("./dist/js"))
+    .src(paths.srcMainJs)
+    .pipe(changed(paths.buildJsFolder))
     .pipe(plumber(plumberNotify("JS")))
     .pipe(babel())
     .pipe(webpack(webpackConfig))
-    .pipe(gulp.dest("./dist/js"));
+    .pipe(gulp.dest(paths.buildJsFolder));
 });
 
 // IMAGES
+const imageminSettings = [
+  gifsicle({ interlaced: true }),
+  mozjpeg({ quality: 80, progressive: true }),
+  optipng({ optimizationLevel: 2 }),
+  svgo({
+    plugins: [
+      {
+        name: "removeViewBox",
+        active: true,
+      },
+      {
+        name: "cleanupIDs",
+        active: true,
+      },
+    ],
+  }),
+];
+
 gulp.task("images", function () {
   return gulp
-    .src("./src/img/**/*")
-    .pipe(changed("./dist/img"))
-    .pipe(imagemin({ verbose: true }))
-    .pipe(gulp.dest("./dist/img"));
+    .src(paths.srcImgFolder)
+    .pipe(changed(paths.buildImgFolder))
+    .pipe(imagemin(imageminSettings, { verbose: true }))
+    .pipe(gulp.dest(paths.buildImgFolder));
 });
 
 // FONTS
 gulp.task("fonts", function () {
   return gulp
-    .src("./src/fonts/**/*")
-    .pipe(changed("./dist/fonts"))
-    .pipe(gulp.dest("./dist/fonts"));
+    .src(paths.srcFonts)
+    .pipe(changed(paths.buildFontsFolder))
+    .pipe(gulp.dest(paths.buildFontsFolder));
 });
 
 // FILES
 gulp.task("files", function () {
   return gulp
-    .src("./src/files/**/*")
-    .pipe(changed("./dist/files"))
-    .pipe(gulp.dest("./dist/files"));
+    .src(paths.srcFiles)
+    .pipe(changed(paths.buildFilesFolder))
+    .pipe(gulp.dest(paths.buildFilesFolder));
 });
 
 // START SERVER
@@ -103,17 +140,17 @@ const serverOptions = {
 };
 
 gulp.task("server", function () {
-  return gulp.src("./dist/").pipe(server(serverOptions));
+  return gulp.src(buildFolder).pipe(server(serverOptions));
 });
 
 //WATCH
 gulp.task("watch", function () {
-  gulp.watch("./src/**/*.html", gulp.parallel("html"));
-  gulp.watch("./src/scss/**/*.scss", gulp.parallel("sass"));
-  gulp.watch("./src/js/**/*.js", gulp.parallel("js"));
-  gulp.watch("./src/img/**/*", gulp.parallel("images"));
-  gulp.watch("./src/fonts/**/*", gulp.parallel("fonts"));
-  gulp.watch("./src/files/**/*", gulp.parallel("files"));
+  gulp.watch(paths.srcHtml, gulp.parallel("html"));
+  gulp.watch(paths.srcScss, gulp.parallel("sass"));
+  gulp.watch(paths.srcJs, gulp.parallel("js"));
+  gulp.watch(paths.srcImgFolder, gulp.parallel("images"));
+  gulp.watch(paths.srcFonts, gulp.parallel("fonts"));
+  gulp.watch(paths.srcFiles, gulp.parallel("files"));
 });
 
 gulp.task(
