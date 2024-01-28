@@ -6,16 +6,18 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="theme-color" content="#111111" />
-    <title>Tamplate Site - contacts</title>
+    <title>Tamplate Site - Blog Post 3</title>
     <!-- <link rel="stylesheet" href="css/vendor.css"> -->
-    <link rel="stylesheet" href="css/main.css" />
-    <script defer src="js/index.bundle.js"></script>
-    <script defer src="js/contacts.bundle.js"></script>
+    <link rel="stylesheet" href="../css/main.css" />
+    <script defer src="../js/index.bundle.js"></script>
   </head>
   <body>
-    <h1>Contacts.html</h1>
-    @@include('blocks/nav.html')
-
+    @@include('../blocks/header.html')
+    <main>
+      <h1>Blog Post 3</h1>
+      @@include('../blocks/nav.html')
+    </main>
     <!-- @@include('blocks/block.html') include exmple -->
+    @@include('../blocks/footer.html')
   </body>
 </html>

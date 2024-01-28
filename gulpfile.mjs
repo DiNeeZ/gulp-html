@@ -2,6 +2,7 @@ import gulp from "gulp";
 import fileinclude from "gulp-file-include";
 import gulpSass from "gulp-sass";
 import * as dartSass from "sass";
+import sassGlob from "gulp-sass-glob";
 import server from "gulp-server-livereload";
 import clean from "gulp-clean";
 import fs from "fs";
@@ -12,16 +13,16 @@ import webpack from "webpack-stream";
 import webpackConfig from "./webpack.config.mjs";
 import babel from "gulp-babel";
 import imagemin, { gifsicle, mozjpeg, optipng, svgo } from "gulp-imagemin";
-import changed from "gulp-changed";
+import changed, { compareContents } from "gulp-changed";
 
 const sass = gulpSass(dartSass);
 
 // paths
 const srcFolder = "./src";
-const buildFolder = "./dist";
+const buildFolder = "./build";
 const paths = {
-  srcHtmlPages: `${srcFolder}/*.html`,
-  srcHtml: `${srcFolder}/**/*.html`,
+  srcHtml: `${srcFolder}/html/**/*.html`,
+  srcHtmlBlocks: `${srcFolder}/html/blocks/**/*.html`,
   srcScss: `${srcFolder}/scss/**/*.scss`,
   buildCssFolder: `${buildFolder}/css`,
   srcMainJs: `${srcFolder}/js/*.js`,
@@ -60,8 +61,8 @@ const fileIncludeSettings = {
 
 gulp.task("html", function () {
   return gulp
-    .src(paths.srcHtmlPages)
-    .pipe(changed(buildFolder))
+    .src([paths.srcHtml, `!${paths.srcHtmlBlocks}`])
+    .pipe(changed(buildFolder, { hasChanged: compareContents }))
     .pipe(plumber(plumberNotify("HTML")))
     .pipe(fileinclude(fileIncludeSettings))
     .pipe(gulp.dest(buildFolder));
@@ -71,7 +72,8 @@ gulp.task("html", function () {
 gulp.task("sass", function () {
   return gulp
     .src(paths.srcScss)
-    .pipe(changed(paths.buildCssFolder))
+    .pipe(sassGlob())
+    .pipe(changed(paths.buildCssFolder, { hasChanged: compareContents }))
     .pipe(plumber(plumberNotify("SCSS")))
     .pipe(sourcemaps.init())
     .pipe(sass())

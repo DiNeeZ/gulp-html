@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="theme-color" content="#111111" />
+    <title>Tamplate Site</title>
+    <!-- <link rel="stylesheet" href="css/vendor.css"> -->
+    <link rel="stylesheet" href="css/main.css" />
+    <script defer src="js/index.bundle.js"></script>
+  </head>
+  <body>
+    @@include('blocks/header.html')
+    <main>
+      <h1>Index.html</h1>
+      @@include('blocks/nav.html')
+
+      <form>
+        <label for="date-pick">Choose a date</label>
+        <input id="date-pick" autocomplete="off" />
+      </form>
+    </main>
+    <!-- @@include('blocks/block.html') include exmple -->
+    @@include('blocks/footer.html')
+  </body>
+</html>

@@ -1,8 +1,9 @@
-@import './blocks/header';
-@import './blocks/footer';
+@import "./base/reset";
+@import "./base/vars";
+@import "./base/base";
+@import "./base/utils";
+@import "./base/containers";
+@import "./base/sticky-footer";
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Blocks */
+@import "blocks/*.scss";

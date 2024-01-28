@@ -6,21 +6,18 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="theme-color" content="#111111" />
-    <title>Tamplate Site</title>
+    <title>Tamplate Site - Blog Post 2</title>
     <!-- <link rel="stylesheet" href="css/vendor.css"> -->
-    <link rel="stylesheet" href="css/main.css" />
-    <script defer src="js/index.bundle.js"></script>
+    <link rel="stylesheet" href="../css/main.css" />
+    <script defer src="../js/index.bundle.js"></script>
   </head>
   <body>
-    <h1>Index.html</h1>
-    @@include('blocks/nav.html')
-
-    <div>
-      Choose a date
-
-      <input id="my-element" autocomplete="off" />
-    </div>
-
+    @@include('../blocks/header.html')
+    <main>
+      <h1>Blog Post 2</h1>
+      @@include('../blocks/nav.html')
+    </main>
     <!-- @@include('blocks/block.html') include exmple -->
+    @@include('../blocks/footer.html')
   </body>
 </html>
