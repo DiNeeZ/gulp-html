@@ -14,13 +14,15 @@
   <body>
     @@include('blocks/header.html')
     <main>
-      <h1>Index.html</h1>
-      @@include('blocks/nav.html')
+      <div class="container">
+        <h1>Index.html</h1>
+        @@include('blocks/nav.html')
 
-      <form>
-        <label for="date-pick">Choose a date</label>
-        <input id="date-pick" autocomplete="off" />
-      </form>
+        <form>
+          <label for="date-pick">Choose a date</label>
+          <input id="date-pick" autocomplete="off" />
+        </form>
+      </div>
     </main>
     <!-- @@include('blocks/block.html') include exmple -->
     @@include('blocks/footer.html')
