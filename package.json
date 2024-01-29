@@ -11,20 +11,23 @@
   "devDependencies": {
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
+    "autoprefixer": "^10.4.17",
     "css-loader": "^6.9.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-changed": "^5.0.2",
     "gulp-clean": "^0.4.0",
     "gulp-file-include": "^2.3.0",
-    "gulp-group-css-media-queries": "^1.2.2",
     "gulp-imagemin": "^9.0.0",
     "gulp-notify": "^4.0.0",
     "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^9.1.0",
     "gulp-sass": "^5.1.0",
     "gulp-sass-glob": "^1.1.0",
     "gulp-server-livereload": "^1.9.2",
     "gulp-sourcemaps": "^3.0.0",
+    "postcss": "^8.4.33",
+    "postcss-sort-media-queries": "^5.2.0",
     "sass": "^1.70.0",
     "style-loader": "^3.3.4",
     "webpack-stream": "^7.0.0"
@@ -35,6 +38,7 @@
     ]
   },
   "dependencies": {
-    "air-datepicker": "^3.4.0"
+    "air-datepicker": "^3.4.0",
+    "sort-css-media-queries": "^2.2.0"
   }
 }

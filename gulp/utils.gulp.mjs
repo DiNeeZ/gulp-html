@@ -1,9 +1,9 @@
-import { gifsicle, mozjpeg, optipng, svgo } from "gulp-imagemin";
-import notify from "gulp-notify";
+import { gifsicle, mozjpeg, optipng, svgo } from 'gulp-imagemin';
+import notify from 'gulp-notify';
 
-const srcFolder = "./src";
-const buildFolderDev = "./build";
-const buildFolderProd = "./dist";
+const srcFolder = './src';
+const buildFolderDev = './build';
+const buildFolderProd = './dist';
 
 export const pathsDev = {
   srcFolder,
@@ -11,16 +11,16 @@ export const pathsDev = {
   srcHtml: `${srcFolder}/html/**/*.html`,
   srcHtmlBlocks: `${srcFolder}/html/blocks/**/*.html`,
   srcScss: `${srcFolder}/scss/**/*.scss`,
-  buildCssFolder: `${buildFolder}/css`,
+  buildCssFolder: `${buildFolderDev}/css`,
   srcMainJs: `${srcFolder}/js/*.js`,
   srcJs: `${srcFolder}/js/**/*.js`,
-  buildJsFolder: `${buildFolder}/js`,
+  buildJsFolder: `${buildFolderDev}/js`,
   srcImgFolder: `${srcFolder}/img/**/*`,
-  buildImgFolder: `${buildFolder}/img`,
+  buildImgFolder: `${buildFolderDev}/img`,
   srcFonts: `${srcFolder}/fonts/**/*`,
-  buildFontsFolder: `${buildFolder}/fonts`,
+  buildFontsFolder: `${buildFolderDev}/fonts`,
   srcFiles: `${srcFolder}/files/**/*`,
-  buildFilesFolder: `${buildFolder}/files`,
+  buildFilesFolder: `${buildFolderDev}/files`,
 };
 
 export const pathsProd = {
@@ -29,29 +29,29 @@ export const pathsProd = {
   srcHtml: `${srcFolder}/html/**/*.html`,
   srcHtmlBlocks: `${srcFolder}/html/blocks/**/*.html`,
   srcScss: `${srcFolder}/scss/**/*.scss`,
-  buildCssFolder: `${buildFolder}/css`,
+  buildCssFolder: `${buildFolderProd}/css`,
   srcMainJs: `${srcFolder}/js/*.js`,
   srcJs: `${srcFolder}/js/**/*.js`,
-  buildJsFolder: `${buildFolder}/js`,
+  buildJsFolder: `${buildFolderProd}/js`,
   srcImgFolder: `${srcFolder}/img/**/*`,
-  buildImgFolder: `${buildFolder}/img`,
+  buildImgFolder: `${buildFolderProd}/img`,
   srcFonts: `${srcFolder}/fonts/**/*`,
-  buildFontsFolder: `${buildFolder}/fonts`,
+  buildFontsFolder: `${buildFolderProd}/fonts`,
   srcFiles: `${srcFolder}/files/**/*`,
-  buildFilesFolder: `${buildFolder}/files`,
+  buildFilesFolder: `${buildFolderProd}/files`,
 };
 
 export const plumberNotify = (title) => ({
   errorHandler: notify.onError({
     title,
-    message: "Error <%= error.message %>",
+    message: 'Error <%= error.message %>',
     sound: false,
   }),
 });
 
 export const fileIncludeSettings = {
-  prefix: "@@",
-  basepath: "@file",
+  prefix: '@@',
+  basepath: '@file',
 };
 
 export const imageminSettings = [
@@ -61,11 +61,11 @@ export const imageminSettings = [
   svgo({
     plugins: [
       {
-        name: "removeViewBox",
+        name: 'removeViewBox',
         active: true,
       },
       {
-        name: "cleanupIDs",
+        name: 'cleanupIDs',
         active: true,
       },
     ],
