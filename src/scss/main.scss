@@ -8,12 +8,3 @@
 
 /* Blocks */
 @import 'blocks/*.scss';
-
-.bg {
-  width: 100%;
-  height: 80vh;
-  background-color: pink;
-  @include bg-imageset(3, jpg);
-  background-size: cover;
-  background-position: center;
-}
