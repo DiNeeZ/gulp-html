@@ -1,5 +1,2 @@
-import hello from "./modules/hello.js";
-
-import "./modules/datePicker.js";
-
-console.log(hello);
+import './modules/burger';
+console.log('hello');

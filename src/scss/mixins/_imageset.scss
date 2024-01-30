@@ -1,0 +1,22 @@
+@mixin bg-imageset($image-path, $ext) {
+  //fallback
+  background-image: url('../img/#{$image-path}.#{$ext}');
+
+  //avif and webp support
+
+  @if $ext == jpg or $ext == jpeg {
+    background-image: image-set(
+      url('../img/#{$image-path}.avif') type('image/avif'),
+      url('../img/#{$image-path}.webp') type('image/webp'),
+      url('../img/#{$image-path}.#{$ext}') type('image/jpeg')
+    );
+  } @else if $ext == png {
+    background-image: image-set(
+      url('../img/#{$image-path}.avif') type('image/avif'),
+      url('../img/#{$image-path}.webp') type('image/webp'),
+      url('../img/#{$image-path}.#{$ext}') type('image/png')
+    );
+  } @else {
+    @error "Unknown file extention #{$ext}. Extentions must be: jpg, jpeg or png.";
+  }
+}

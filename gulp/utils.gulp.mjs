@@ -15,7 +15,7 @@ export const pathsDev = {
   srcMainJs: `${srcFolder}/js/*.js`,
   srcJs: `${srcFolder}/js/**/*.js`,
   buildJsFolder: `${buildFolderDev}/js`,
-  srcImgFolder: `${srcFolder}/img/**/*`,
+  srcImgFolder: `${srcFolder}/img`,
   buildImgFolder: `${buildFolderDev}/img`,
   srcFonts: `${srcFolder}/fonts/**/*`,
   buildFontsFolder: `${buildFolderDev}/fonts`,

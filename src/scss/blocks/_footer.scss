@@ -4,11 +4,7 @@
   font-size: 32px;
   color: #fff;
 
-  h1 {
-    font-size: 32px;
-  }
-
-  @media (max-width: 1200px) {
+  @include tablet {
     font-size: 26px;
   }
 }

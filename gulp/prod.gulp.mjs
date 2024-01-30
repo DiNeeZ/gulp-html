@@ -1,20 +1,29 @@
 import gulp from 'gulp';
-import postcss from 'gulp-postcss';
+
+// HTML
 import fileinclude from 'gulp-file-include';
+import htmlclean from 'gulp-htmlclean';
+
+// SASS
 import gulpSass from 'gulp-sass';
 import * as dartSass from 'sass';
 import sassGlob from 'gulp-sass-glob';
+import sourcemaps from 'gulp-sourcemaps';
+import postcss from 'gulp-postcss';
+import csso from 'gulp-csso';
+
+// IMAGES
+import imagemin from 'gulp-imagemin';
+import avif from 'gulp-avif';
+import webp from 'gulp-webp';
 
 import server from 'gulp-server-livereload';
 import clean from 'gulp-clean';
 import fs from 'fs';
-import sourcemaps from 'gulp-sourcemaps';
-// import groupMedia from 'gulp-group-css-media-queries';
 import plumber from 'gulp-plumber';
 import webpack from 'webpack-stream';
 import webpackConfig from '../webpack.config.mjs';
 import babel from 'gulp-babel';
-import imagemin from 'gulp-imagemin';
 import changed, { compareContents } from 'gulp-changed';
 import {
   pathsProd as paths,
@@ -41,25 +50,23 @@ gulp.task('html:prod', function () {
     .pipe(changed(paths.buildFolder, { hasChanged: compareContents }))
     .pipe(plumber(plumberNotify('HTML')))
     .pipe(fileinclude(fileIncludeSettings))
+    .pipe(htmlclean())
     .pipe(gulp.dest(paths.buildFolder));
 });
 
 // SASS
 gulp.task('sass:prod', function () {
-  return (
-    gulp
-      .src(paths.srcScss)
-      .pipe(sassGlob())
-      .pipe(changed(paths.buildCssFolder, { hasChanged: compareContents }))
-      .pipe(plumber(plumberNotify('SCSS')))
-      .pipe(sourcemaps.init())
-      // .pipe(autoPrefixer())
-      // .pipe(groupMedia())
-      .pipe(sass())
-      .pipe(sourcemaps.write())
-      .pipe(postcss())
-      .pipe(gulp.dest(paths.buildCssFolder))
-  );
+  return gulp
+    .src(paths.srcScss)
+    .pipe(sassGlob())
+    .pipe(changed(paths.buildCssFolder, { hasChanged: compareContents }))
+    .pipe(plumber(plumberNotify('SCSS')))
+    .pipe(sourcemaps.init())
+    .pipe(sass())
+    .pipe(postcss())
+    .pipe(sourcemaps.write())
+    .pipe(csso())
+    .pipe(gulp.dest(paths.buildCssFolder));
 });
 
 //JAVASCRIPT
@@ -76,9 +83,30 @@ gulp.task('js:prod', function () {
 // IMAGES
 gulp.task('images:prod', function () {
   return gulp
-    .src(paths.srcImgFolder)
+    .src([
+      `${paths.srcImgFolder}/**/**.{jpg,jpeg,png,svg}`,
+      `!${paths.srcImgFolder}/svg/**/*.svg`,
+    ])
     .pipe(changed(paths.buildImgFolder))
     .pipe(imagemin(imageminSettings, { verbose: true }))
+    .pipe(gulp.dest(paths.buildImgFolder));
+});
+
+// AVIF IMAGES
+gulp.task('avif:prod', function () {
+  return gulp
+    .src([`${paths.srcImgFolder}/**/**.{jpg,jpeg,png}`])
+    .pipe(changed(paths.buildImgFolder))
+    .pipe(avif())
+    .pipe(gulp.dest(paths.buildImgFolder));
+});
+
+// WEBP IMAGES
+gulp.task('webp:prod', function () {
+  return gulp
+    .src([`${paths.srcImgFolder}/**/**.{jpg,jpeg,png}`])
+    .pipe(changed(paths.buildImgFolder))
+    .pipe(webp())
     .pipe(gulp.dest(paths.buildImgFolder));
 });
 

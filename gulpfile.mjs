@@ -5,12 +5,13 @@ import './gulp/prod.gulp.mjs';
 gulp.task(
   'default',
   gulp.series(
-    'clean:dev',
     gulp.parallel(
       'html:dev',
       'sass:dev',
       'js:dev',
       'images:dev',
+      'avif:dev',
+      'webp:dev',
       'fonts:dev',
       'files:dev'
     ),
@@ -27,6 +28,8 @@ gulp.task(
       'sass:prod',
       'js:prod',
       'images:prod',
+      'avif:prod',
+      'webp:prod',
       'fonts:prod',
       'files:prod'
     ),

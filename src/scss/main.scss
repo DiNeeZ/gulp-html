@@ -1,5 +1,6 @@
-@import './base/reset';
 @import './base/vars';
+@import './mixins/mixins';
+@import './base/reset';
 @import './base/base';
 @import './base/utils';
 @import './base/containers';
@@ -8,6 +9,11 @@
 /* Blocks */
 @import 'blocks/*.scss';
 
-::placeholder {
-  color: aqua;
+.bg {
+  width: 100%;
+  height: 80vh;
+  background-color: pink;
+  @include bg-imageset(3, jpg);
+  background-size: cover;
+  background-position: center;
 }

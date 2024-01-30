@@ -1,8 +1,18 @@
 import gulp from 'gulp';
+
+// HTML
 import fileinclude from 'gulp-file-include';
+
+// SASS
 import gulpSass from 'gulp-sass';
 import * as dartSass from 'sass';
 import sassGlob from 'gulp-sass-glob';
+
+// IMAMGES
+import imagemin from 'gulp-imagemin';
+import avif from 'gulp-avif';
+import webp from 'gulp-webp';
+
 import server from 'gulp-server-livereload';
 import clean from 'gulp-clean';
 import fs from 'fs';
@@ -11,7 +21,6 @@ import plumber from 'gulp-plumber';
 import webpack from 'webpack-stream';
 import webpackConfig from '../webpack.config.mjs';
 import babel from 'gulp-babel';
-import imagemin from 'gulp-imagemin';
 import changed, { compareContents } from 'gulp-changed';
 import {
   pathsDev as paths,
@@ -68,9 +77,30 @@ gulp.task('js:dev', function () {
 // IMAGES
 gulp.task('images:dev', function () {
   return gulp
-    .src(paths.srcImgFolder)
+    .src([
+      `${paths.srcImgFolder}/**/**.{jpg,jpeg,png,svg}`,
+      `!${paths.srcImgFolder}/svg/**/*.svg`,
+    ])
     .pipe(changed(paths.buildImgFolder))
     .pipe(imagemin(imageminSettings, { verbose: true }))
+    .pipe(gulp.dest(paths.buildImgFolder));
+});
+
+// AVIF IMAGES
+gulp.task('avif:dev', function () {
+  return gulp
+    .src([`${paths.srcImgFolder}/**/**.{jpg,jpeg,png}`])
+    .pipe(changed(paths.buildImgFolder))
+    .pipe(avif())
+    .pipe(gulp.dest(paths.buildImgFolder));
+});
+
+// WEBP IMAGES
+gulp.task('webp:dev', function () {
+  return gulp
+    .src([`${paths.srcImgFolder}/**/**.{jpg,jpeg,png}`])
+    .pipe(changed(paths.buildImgFolder))
+    .pipe(webp())
     .pipe(gulp.dest(paths.buildImgFolder));
 });
 
@@ -100,7 +130,21 @@ gulp.task('watch:dev', function () {
   gulp.watch(paths.srcHtml, gulp.parallel('html:dev'));
   gulp.watch(paths.srcScss, gulp.parallel('sass:dev'));
   gulp.watch(paths.srcJs, gulp.parallel('js:dev'));
-  gulp.watch(paths.srcImgFolder, gulp.parallel('images:dev'));
+  gulp.watch(
+    [
+      `${paths.srcImgFolder}/**/**.{jpg,jpeg,png,svg}`,
+      `!${paths.srcImgFolder}/svg/**/*.svg`,
+    ],
+    gulp.parallel('images:dev')
+  );
+  gulp.watch(
+    `${paths.srcImgFolder}/**/**.{jpg,jpeg,png}`,
+    gulp.parallel('avif:dev')
+  );
+  gulp.watch(
+    `${paths.srcImgFolder}/**/*.{jpg,jpeg,png}`,
+    gulp.parallel('webp:dev')
+  );
   gulp.watch(paths.srcFonts, gulp.parallel('fonts:dev'));
   gulp.watch(paths.srcFiles, gulp.parallel('files:dev'));
 });
