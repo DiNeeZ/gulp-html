@@ -1,14 +1,15 @@
 @mixin burger {
-  --burger-width: 30px;
+  --burger-width: 40px;
   --burger-height: 30px;
-  --burger-line-height: 2px;
+  --burger-line-height: 4px;
+  --radius: 4px;
 
   position: relative;
   border: none;
   padding: 0;
   width: var(--burger-width);
   height: var(--burger-height);
-  color: #000;
+  color: var(--text-color);
   background-color: transparent;
   cursor: pointer;
 
@@ -19,6 +20,7 @@
     left: 0;
     width: 100%;
     height: var(--burger-line-height);
+    border-radius: var(--radius);
     background-color: currentColor;
     transition: transform 0.3s ease-in-out, top 0.3s ease-in-out;
   }
@@ -37,6 +39,7 @@
     top: 50%;
     width: 100%;
     height: var(--burger-line-height);
+    border-radius: var(--radius);
     background-color: currentColor;
     transform: translateY(-50%);
     transition: transform 0.3s ease-in-out;
@@ -45,6 +48,7 @@
   &--active {
     &::before {
       top: 50%;
+      border-radius: var(--radius);
       transform: rotate(45deg);
       transition: transform 0.3s ease-in-out, top 0.3s ease-in-out;
     }
