@@ -7,7 +7,8 @@
     "dev": "gulp",
     "prod": "gulp prod",
     "clean": "gulp clean:dev && gulp clean:prod",
-    "zip": "gulp zip:prod"
+    "zip": "gulp zip:prod",
+    "html": "html-validate dist/**/*.html"
   },
   "author": "Denis M",
   "license": "ISC",
@@ -34,6 +35,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-webp": "^5.0.0",
     "gulp-zip": "^6.0.0",
+    "html-validate": "^8.9.1",
     "imagemin-avif": "^0.1.6",
     "postcss": "^8.4.33",
     "postcss-sort-media-queries": "^5.2.0",
