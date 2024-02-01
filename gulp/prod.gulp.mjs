@@ -17,9 +17,13 @@ import imagemin from 'gulp-imagemin';
 import avif from 'gulp-avif';
 import webp from 'gulp-webp';
 
+// ZIP
+import zip from 'gulp-zip';
+
+import fs from 'fs';
+import path from 'path';
 import server from 'gulp-server-livereload';
 import clean from 'gulp-clean';
-import fs from 'fs';
 import plumber from 'gulp-plumber';
 import webpack from 'webpack-stream';
 import webpackConfig from '../webpack.config.mjs';
@@ -34,6 +38,7 @@ import {
 } from './utils.gulp.mjs';
 
 const sass = gulpSass(dartSass);
+const rootName = path.basename(path.resolve());
 
 // CLEAN
 gulp.task('clean:prod', function (done) {
@@ -129,4 +134,16 @@ gulp.task('files:prod', function () {
 // START SERVER
 gulp.task('server:prod', function () {
   return gulp.src(paths.buildFolder).pipe(server(serverOptions));
+});
+
+// ZIP
+gulp.task('zip:prod', function () {
+  if (!fs.existsSync(paths.buildFolder)) {
+    throw new Error('Create prod build at first');
+  }
+  return gulp
+    .src(`${paths.buildFolder}/*`)
+    .pipe(plumber(plumberNotify('ZIP')))
+    .pipe(zip(`${rootName}.zip`))
+    .pipe(gulp.dest(paths.buildFolder));
 });

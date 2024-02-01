@@ -4,7 +4,10 @@
   "description": "starter template",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "gulp",
+    "prod": "gulp prod",
+    "clean": "gulp clean:dev && gulp clean:prod",
+    "zip": "gulp zip:prod"
   },
   "author": "Denis M",
   "license": "ISC",
@@ -30,6 +33,7 @@
     "gulp-server-livereload": "^1.9.2",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-webp": "^5.0.0",
+    "gulp-zip": "^6.0.0",
     "imagemin-avif": "^0.1.6",
     "postcss": "^8.4.33",
     "postcss-sort-media-queries": "^5.2.0",
