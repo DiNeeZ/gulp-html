@@ -17,13 +17,19 @@ import imagemin from 'gulp-imagemin';
 import avif from 'gulp-avif';
 import webp from 'gulp-webp';
 
+//SVG
+import svgsprite from 'gulp-svg-sprite';
+import svgmin from 'gulp-svgmin';
+import cheerio from 'gulp-cheerio';
+import replace from 'gulp-replace';
+
 // ZIP
 import zip from 'gulp-zip';
 
 import fs from 'fs';
+import { deleteSync } from 'del';
 import path from 'path';
 import server from 'gulp-server-livereload';
-import clean from 'gulp-clean';
 import plumber from 'gulp-plumber';
 import webpack from 'webpack-stream';
 import webpackConfig from '../webpack.config.mjs';
@@ -42,9 +48,7 @@ const rootName = path.basename(path.resolve());
 
 // CLEAN
 gulp.task('clean:prod', function (done) {
-  if (fs.existsSync(paths.buildFolder)) {
-    return gulp.src(paths.buildFolder, { read: false }).pipe(clean());
-  }
+  if (fs.existsSync(paths.buildFolder)) deleteSync(paths.buildFolder);
   done();
 });
 
@@ -89,7 +93,7 @@ gulp.task('js:prod', function () {
 gulp.task('images:prod', function () {
   return gulp
     .src([
-      `${paths.srcImgFolder}/**/**.{jpg,jpeg,png,svg}`,
+      `${paths.srcImgFolder}/**/*.{jpg,jpeg,png,svg}`,
       `!${paths.srcImgFolder}/svg/**/*.svg`,
     ])
     .pipe(changed(paths.buildImgFolder))
@@ -112,6 +116,43 @@ gulp.task('webp:prod', function () {
     .src([`${paths.srcImgFolder}/**/**.{jpg,jpeg,png}`])
     .pipe(changed(paths.buildImgFolder))
     .pipe(webp())
+    .pipe(gulp.dest(paths.buildImgFolder));
+});
+
+// SVG SPRITES
+gulp.task('svg:prod', function () {
+  return gulp
+    .src(paths.srcSvg)
+    .pipe(changed(paths.buildImgFolder))
+    .pipe(
+      svgmin({
+        js2svg: {
+          pretty: true,
+        },
+      })
+    )
+    .pipe(
+      cheerio({
+        run: function ($) {
+          $('[fill]').removeAttr('fill');
+          $('[stroke]').removeAttr('stroke');
+          $('[style]').removeAttr('style');
+        },
+        parserOptions: {
+          xmlMode: true,
+        },
+      })
+    )
+    .pipe(replace('&gt;', '>'))
+    .pipe(
+      svgsprite({
+        mode: {
+          stack: {
+            sprite: '../sprite.svg',
+          },
+        },
+      })
+    )
     .pipe(gulp.dest(paths.buildImgFolder));
 });
 
@@ -141,8 +182,14 @@ gulp.task('zip:prod', function () {
   if (!fs.existsSync(paths.buildFolder)) {
     throw new Error('Create prod build at first');
   }
+
+  if (fs.existsSync(`${paths.buildFolder}/${rootName}.zip`)) {
+    deleteSync([`${paths.buildFolder}/*.zip`]);
+    console.log('file exists');
+  }
+
   return gulp
-    .src(`${paths.buildFolder}/*`)
+    .src(`${paths.buildFolder}/**/*.*`)
     .pipe(plumber(plumberNotify('ZIP')))
     .pipe(zip(`${rootName}.zip`))
     .pipe(gulp.dest(paths.buildFolder));

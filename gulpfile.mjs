@@ -12,6 +12,7 @@ gulp.task(
       'images:dev',
       'avif:dev',
       'webp:dev',
+      'svg:dev',
       'fonts:dev',
       'files:dev'
     ),
@@ -30,6 +31,7 @@ gulp.task(
       'images:prod',
       'avif:prod',
       'webp:prod',
+      'svg:prod',
       'fonts:prod',
       'files:prod'
     ),

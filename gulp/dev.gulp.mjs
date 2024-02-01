@@ -8,14 +8,20 @@ import gulpSass from 'gulp-sass';
 import * as dartSass from 'sass';
 import sassGlob from 'gulp-sass-glob';
 
-// IMAMGES
+// IMAGES
 import imagemin from 'gulp-imagemin';
 import avif from 'gulp-avif';
 import webp from 'gulp-webp';
 
+//SVG
+import svgsprite from 'gulp-svg-sprite';
+import svgmin from 'gulp-svgmin';
+import cheerio from 'gulp-cheerio';
+import replace from 'gulp-replace';
+
 import server from 'gulp-server-livereload';
-import clean from 'gulp-clean';
 import fs from 'fs';
+import { deleteSync } from 'del';
 import sourcemaps from 'gulp-sourcemaps';
 import plumber from 'gulp-plumber';
 import webpack from 'webpack-stream';
@@ -34,9 +40,7 @@ const sass = gulpSass(dartSass);
 
 // CLEAN
 gulp.task('clean:dev', function (done) {
-  if (fs.existsSync(paths.buildFolder)) {
-    return gulp.src(paths.buildFolder, { read: false }).pipe(clean());
-  }
+  if (fs.existsSync(paths.buildFolder)) deleteSync(paths.buildFolder);
   done();
 });
 
@@ -104,6 +108,43 @@ gulp.task('webp:dev', function () {
     .pipe(gulp.dest(paths.buildImgFolder));
 });
 
+// SVG SPRITES
+gulp.task('svg:dev', function () {
+  return gulp
+    .src(paths.srcSvg)
+    .pipe(changed(paths.buildImgFolder))
+    .pipe(
+      svgmin({
+        js2svg: {
+          pretty: true,
+        },
+      })
+    )
+    .pipe(
+      cheerio({
+        run: function ($) {
+          $('[fill]').removeAttr('fill');
+          $('[stroke]').removeAttr('stroke');
+          $('[style]').removeAttr('style');
+        },
+        parserOptions: {
+          xmlMode: true,
+        },
+      })
+    )
+    .pipe(replace('&gt;', '>'))
+    .pipe(
+      svgsprite({
+        mode: {
+          stack: {
+            sprite: '../sprite.svg',
+          },
+        },
+      })
+    )
+    .pipe(gulp.dest(paths.buildImgFolder));
+});
+
 // FONTS
 gulp.task('fonts:dev', function () {
   return gulp
@@ -145,6 +186,7 @@ gulp.task('watch:dev', function () {
     `${paths.srcImgFolder}/**/*.{jpg,jpeg,png}`,
     gulp.parallel('webp:dev')
   );
+  gulp.watch(paths.srcSvg, gulp.parallel('svg:dev'));
   gulp.watch(paths.srcFonts, gulp.parallel('fonts:dev'));
   gulp.watch(paths.srcFiles, gulp.parallel('files:dev'));
 });
